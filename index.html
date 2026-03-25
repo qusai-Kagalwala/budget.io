@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#0d0f14" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>budget.io</title>
+  <title>Budget Planner</title>
   <link rel="stylesheet" href="assets/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- SPLASH -->
+  <!-- ── SPLASH ── -->
   <div id="splash">
     <div class="splash-inner">
       <div class="splash-logo">budget<span>.</span>io</div>
@@ -20,53 +20,67 @@
     </div>
   </div>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo">budget<span>.</span>io</div>
+  <!-- ── HEADER ── -->
+  <header id="appHeader">
+    <div class="header-left">
+      <div class="logo">budget<span>.</span>io</div>
+    </div>
     <div class="header-right">
-      <button class="icon-btn" id="themeToggle" title="Toggle theme">🌙</button>
-      <button class="icon-btn" onclick="exportCSV()" title="Export CSV">⬇</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+      <button class="icon-btn" onclick="exportCSV()" title="Export CSV" aria-label="Export CSV">⬇</button>
     </div>
   </header>
 
-  <!-- MONTH SELECTOR -->
+  <!-- ── MONTH SELECTOR ── -->
   <div class="month-bar">
-    <button class="month-nav" onclick="shiftMonth(-1)">‹</button>
+    <button class="month-nav" onclick="shiftMonth(-1)" aria-label="Previous month">‹</button>
     <div class="month-display">
       <span id="monthName"></span>
       <span id="monthYear" class="month-year"></span>
     </div>
-    <button class="month-nav" onclick="shiftMonth(1)">›</button>
+    <button class="month-nav" onclick="shiftMonth(1)" aria-label="Next month">›</button>
   </div>
 
-  <!-- PAGES -->
+  <!-- ── PAGES ── -->
   <div id="app">
 
-    <!-- DASHBOARD -->
+    <!-- PAGE: DASHBOARD -->
     <section class="page active" id="page-dashboard">
+
+      <!-- Summary Cards -->
       <div class="summary-grid">
-        <div class="stat-card anim-in" style="--delay:.05s">
-          <div class="stat-top"><span class="stat-label">Income</span><span class="stat-icon" style="color:var(--income)">↑</span></div>
-          <div class="stat-value" id="totalIncome" style="color:var(--income)">₹0</div>
+        <div class="stat-card income anim-in" style="--delay:.05s">
+          <div class="stat-top">
+            <span class="stat-label">Income</span>
+            <span class="stat-icon">↑</span>
+          </div>
+          <div class="stat-value" id="totalIncome">₹0</div>
           <div class="stat-count" id="incomeCount">0 entries</div>
         </div>
-        <div class="stat-card anim-in" style="--delay:.1s">
-          <div class="stat-top"><span class="stat-label">Expenses</span><span class="stat-icon" style="color:var(--expense)">↓</span></div>
-          <div class="stat-value" id="totalExpense" style="color:var(--expense)">₹0</div>
+        <div class="stat-card expense anim-in" style="--delay:.1s">
+          <div class="stat-top">
+            <span class="stat-label">Expenses</span>
+            <span class="stat-icon">↓</span>
+          </div>
+          <div class="stat-value" id="totalExpense">₹0</div>
           <div class="stat-count" id="expenseCount">0 entries</div>
         </div>
-        <div class="stat-card anim-in" style="--delay:.15s">
-          <div class="stat-top"><span class="stat-label">Balance</span><span class="stat-icon" style="color:var(--accent2)">◈</span></div>
-          <div class="stat-value" id="totalBalance" style="color:var(--accent2)">₹0</div>
+        <div class="stat-card balance anim-in" style="--delay:.15s">
+          <div class="stat-top">
+            <span class="stat-label">Balance</span>
+            <span class="stat-icon">◈</span>
+          </div>
+          <div class="stat-value" id="totalBalance">₹0</div>
           <div class="stat-count" id="savingsRate">0% saved</div>
         </div>
       </div>
 
-      <div id="carryBanner" class="carry-banner hidden"></div>
+      <!-- Insights Banner -->
       <div id="insightsBanner" class="insights-banner hidden">
-        <div id="insightScroll" class="insight-scroll"></div>
+        <div class="insight-scroll" id="insightScroll"></div>
       </div>
 
+      <!-- Chart -->
       <div class="card anim-in" style="--delay:.2s">
         <div class="card-header">
           <span class="card-title">Spending Split</span>
@@ -75,27 +89,22 @@
             <button class="ctt-btn" onclick="setChartType('bar',this)">Bar</button>
           </div>
         </div>
-        <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+        <div class="chart-wrap">
+          <canvas id="mainChart"></canvas>
+        </div>
         <div class="chart-legend" id="chartLegend"></div>
       </div>
 
-      <!-- Savings snapshot on dashboard -->
-      <div class="card anim-in" style="--delay:.23s">
-        <div class="card-header">
-          <span class="card-title">Savings Goals</span>
-          <button class="text-btn" onclick="switchPage('savings')">Manage →</button>
-        </div>
-        <div id="savingsSnapshot"></div>
-      </div>
-
-      <div class="card anim-in" style="--delay:.26s">
+      <!-- Category Breakdown -->
+      <div class="card anim-in" style="--delay:.25s">
         <div class="card-header">
           <span class="card-title">By Category</span>
-          <span class="card-subtitle" id="catSubtitle"></span>
+          <span class="card-subtitle" id="catSubtitle">expenses</span>
         </div>
         <div id="catBars"></div>
       </div>
 
+      <!-- Recent Transactions -->
       <div class="card anim-in" style="--delay:.3s">
         <div class="card-header">
           <span class="card-title">Recent</span>
@@ -103,23 +112,30 @@
         </div>
         <div class="tx-list" id="recentList"></div>
       </div>
+
     </section>
 
-    <!-- ADD -->
+    <!-- PAGE: ADD -->
     <section class="page" id="page-add">
       <div class="add-page-inner">
+
         <div class="type-toggle-big">
           <button class="ttb income active" id="bigBtnIncome" onclick="setType('income')">
-            <span class="ttb-icon" style="color:var(--income)">↑</span><span class="ttb-label">Income</span>
+            <span class="ttb-icon">↑</span>
+            <span class="ttb-label">Income</span>
           </button>
           <button class="ttb expense" id="bigBtnExpense" onclick="setType('expense')">
-            <span class="ttb-icon" style="color:var(--expense)">↓</span><span class="ttb-label">Expense</span>
+            <span class="ttb-icon">↓</span>
+            <span class="ttb-label">Expense</span>
           </button>
         </div>
+
         <div class="amount-hero">
           <span class="amount-currency">₹</span>
-          <input type="number" id="heroAmount" class="amount-input" placeholder="0.00" min="0" step="0.01" inputmode="decimal" />
+          <input type="number" id="heroAmount" class="amount-input" placeholder="0.00"
+                 min="0" step="0.01" inputmode="decimal" />
         </div>
+
         <div class="form-card">
           <div class="form-row">
             <label>Description</label>
@@ -137,7 +153,10 @@
             <div>
               <label>Recurring</label>
               <div class="toggle-row">
-                <label class="switch"><input type="checkbox" id="isRecurring" /><span class="slider"></span></label>
+                <label class="switch">
+                  <input type="checkbox" id="isRecurring" />
+                  <span class="slider"></span>
+                </label>
                 <span class="toggle-label" id="recurLabel">Off</span>
               </div>
             </div>
@@ -152,21 +171,24 @@
           </div>
           <div class="form-row">
             <label>Note <span class="optional">(optional)</span></label>
-            <input type="text" id="txNote" class="form-input" placeholder="Extra details…" maxlength="80" />
+            <input type="text" id="txNote" class="form-input" placeholder="Any extra details..." maxlength="80" />
           </div>
         </div>
+
         <button class="btn-add" id="submitBtn" onclick="addTransaction()">
           <span id="submitLabel">Add Income</span>
         </button>
+
       </div>
     </section>
 
-    <!-- TRANSACTIONS -->
+    <!-- PAGE: TRANSACTIONS -->
     <section class="page" id="page-transactions">
       <div class="search-bar-wrap">
         <div class="search-bar">
           <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="Search…" oninput="renderTransactions()" />
+          <input type="text" id="searchInput" placeholder="Search transactions..."
+                 oninput="renderTransactions()" />
         </div>
         <select id="filterType" class="filter-select" onchange="renderTransactions()">
           <option value="all">All</option>
@@ -175,145 +197,97 @@
         </select>
       </div>
       <div class="filter-chips-row">
-        <button class="fchip active" onclick="filterByCat(this,'all')">All</button>
-        <button class="fchip" onclick="filterByCat(this,'Food')">🍜 Food</button>
-        <button class="fchip" onclick="filterByCat(this,'Transport')">🚌 Transport</button>
-        <button class="fchip" onclick="filterByCat(this,'Shopping')">🛍️ Shop</button>
-        <button class="fchip" onclick="filterByCat(this,'Education')">📚 Edu</button>
-        <button class="fchip" onclick="filterByCat(this,'Entertainment')">🎮 Fun</button>
-        <button class="fchip" onclick="filterByCat(this,'Health')">🏥 Health</button>
+        <button class="fchip active" data-cat="all" onclick="filterByCat(this,'all')">All</button>
+        <button class="fchip" data-cat="Food" onclick="filterByCat(this,'Food')">🍜 Food</button>
+        <button class="fchip" data-cat="Transport" onclick="filterByCat(this,'Transport')">🚌 Transport</button>
+        <button class="fchip" data-cat="Shopping" onclick="filterByCat(this,'Shopping')">🛍️ Shop</button>
+        <button class="fchip" data-cat="Education" onclick="filterByCat(this,'Education')">📚 Edu</button>
+        <button class="fchip" data-cat="Entertainment" onclick="filterByCat(this,'Entertainment')">🎮 Fun</button>
+        <button class="fchip" data-cat="Health" onclick="filterByCat(this,'Health')">🏥 Health</button>
       </div>
       <div id="txGroupedList"></div>
     </section>
 
-    <!-- SAVINGS GOALS -->
-    <section class="page" id="page-savings">
-      <p class="page-intro">Save toward anything — trips, gadgets, emergencies.<br/>Unspent balance <strong>carries forward</strong> each month automatically.</p>
-      <div id="savingsList"></div>
-      <button class="btn-add outline" style="margin-top:8px" onclick="openSavingsModal()">＋ New Savings Goal</button>
-    </section>
-
-    <!-- BUDGET LIMITS -->
+    <!-- PAGE: GOALS -->
     <section class="page" id="page-goals">
-      <p class="page-intro">Set monthly spending limits per category.</p>
+      <div class="goals-header">
+        <p class="goals-intro">Set monthly spending limits per category. We'll track your progress.</p>
+      </div>
       <div id="goalsList"></div>
-      <button class="btn-add outline" style="margin-top:8px" onclick="openGoalModal()">＋ Set Budget Limit</button>
+      <button class="btn-add outline" onclick="openGoalModal()">＋ Set Budget Goal</button>
     </section>
 
-    <!-- STATS -->
+    <!-- PAGE: STATS -->
     <section class="page" id="page-stats">
       <div class="card">
         <div class="card-title">Monthly Trend</div>
-        <div class="chart-wrap tall"><canvas id="trendChart"></canvas></div>
+        <div class="chart-wrap tall">
+          <canvas id="trendChart"></canvas>
+        </div>
       </div>
       <div class="card">
         <div class="card-title">Top Spending Days</div>
         <div id="topDays"></div>
       </div>
       <div class="stats-grid" id="statsGrid"></div>
-
     </section>
 
-  </div>
+  </div><!-- /app -->
 
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav" id="bottomNav">
     <button class="nav-item active" onclick="switchPage('dashboard')" data-page="dashboard">
-      <span class="nav-icon">◈</span><span class="nav-label">Home</span>
+      <span class="nav-icon">◈</span>
+      <span class="nav-label">Home</span>
     </button>
-    <button class="nav-item" onclick="switchPage('add')" data-page="add">
-      <span class="nav-icon add-icon">＋</span><span class="nav-label">Add</span>
+    <button class="nav-item" onclick="switchPage('add')" data-page="add" id="addNavBtn">
+      <span class="nav-icon add-icon">＋</span>
+      <span class="nav-label">Add</span>
     </button>
     <button class="nav-item" onclick="switchPage('transactions')" data-page="transactions">
-      <span class="nav-icon">≡</span><span class="nav-label">Txns</span>
+      <span class="nav-icon">≡</span>
+      <span class="nav-label">Txns</span>
     </button>
-    <button class="nav-item" onclick="switchPage('savings')" data-page="savings">
-      <span class="nav-icon">★</span><span class="nav-label">Save</span>
+    <button class="nav-item" onclick="switchPage('goals')" data-page="goals">
+      <span class="nav-icon">◎</span>
+      <span class="nav-label">Goals</span>
     </button>
     <button class="nav-item" onclick="switchPage('stats')" data-page="stats">
-      <span class="nav-icon">↗</span><span class="nav-label">Stats</span>
+      <span class="nav-icon">↗</span>
+      <span class="nav-label">Stats</span>
     </button>
   </nav>
 
-  <!-- MODALS -->
-
-  <!-- Budget Limit -->
-  <div class="modal-overlay" id="goalModal" onclick="closeModal('goalModal',event)">
+  <!-- ── GOAL MODAL ── -->
+  <div class="modal-overlay" id="goalModal" onclick="closeGoalModal(event)">
     <div class="modal-card">
-      <div class="modal-handle"></div>
-      <div class="modal-title">Set Spending Limit</div>
-      <div class="form-row"><label>Category</label>
+      <div class="modal-title">Set Budget Goal</div>
+      <div class="form-row">
+        <label>Category</label>
         <select id="goalCat" class="form-input">
-          <option value="Food">🍜 Food</option><option value="Transport">🚌 Transport</option>
-          <option value="Education">📚 Education</option><option value="Shopping">🛍️ Shopping</option>
-          <option value="Utilities">💡 Utilities</option><option value="Health">🏥 Health</option>
-          <option value="Entertainment">🎮 Entertainment</option><option value="Rent">🏠 Rent</option>
+          <option value="Food">🍜 Food</option>
+          <option value="Transport">🚌 Transport</option>
+          <option value="Education">📚 Education</option>
+          <option value="Shopping">🛍️ Shopping</option>
+          <option value="Utilities">💡 Utilities</option>
+          <option value="Health">🏥 Health</option>
+          <option value="Entertainment">🎮 Entertainment</option>
+          <option value="Rent">🏠 Rent</option>
           <option value="Other">📦 Other</option>
         </select>
       </div>
-      <div class="form-row"><label>Monthly Limit (₹)</label>
-        <input type="number" id="goalAmount" class="form-input" placeholder="e.g. 5000" min="1" inputmode="decimal" />
+      <div class="form-row">
+        <label>Monthly Limit (₹)</label>
+        <input type="number" id="goalAmount" class="form-input" placeholder="e.g. 5000" min="1" />
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('goalModal')">Cancel</button>
-        <button class="btn-add small" onclick="saveGoal()">Save</button>
+        <button class="btn-cancel" onclick="closeGoalModal()">Cancel</button>
+        <button class="btn-add small" onclick="saveGoal()">Save Goal</button>
       </div>
     </div>
   </div>
 
-  <!-- New Savings Goal -->
-  <div class="modal-overlay" id="savingsModal" onclick="closeModal('savingsModal',event)">
-    <div class="modal-card">
-      <div class="modal-handle"></div>
-      <div class="modal-title">New Savings Goal</div>
-      <div class="form-row"><label>Goal Name</label>
-        <input type="text" id="sgName" class="form-input" placeholder="e.g. Trip to Goa, New Laptop…" maxlength="40" />
-      </div>
-      <div class="form-row"><label>Choose Emoji</label>
-        <div id="emojiPicker" class="emoji-picker"></div>
-        <input type="hidden" id="sgEmoji" value="🎯" />
-      </div>
-      <div class="form-row"><label>Target Amount (₹)</label>
-        <input type="number" id="sgTarget" class="form-input" placeholder="e.g. 50000" min="1" inputmode="decimal" />
-      </div>
-      <div class="form-row"><label>Deadline <span class="optional">(optional)</span></label>
-        <input type="month" id="sgDeadline" class="form-input" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('savingsModal')">Cancel</button>
-        <button class="btn-add small" onclick="createSavingsGoal()">Create</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Contribute / Withdraw -->
-  <div class="modal-overlay" id="contributeModal" onclick="closeModal('contributeModal',event)">
-    <div class="modal-card">
-      <div class="modal-handle"></div>
-      <div class="modal-title" id="contributeTitle">Add Money</div>
-      <div class="form-row"><label>Amount (₹)</label>
-        <input type="number" id="contributeAmt" class="form-input" placeholder="0.00" min="0.01" inputmode="decimal" />
-      </div>
-      <div class="form-row"><label>Note <span class="optional">(optional)</span></label>
-        <input type="text" id="contributeNote" class="form-input" placeholder="e.g. Monthly transfer" maxlength="50" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('contributeModal')">Cancel</button>
-        <button class="btn-add small" id="contributeBtn" onclick="submitContribution()">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- History -->
-  <div class="modal-overlay" id="historyModal" onclick="closeModal('historyModal',event)">
-    <div class="modal-card">
-      <div class="modal-handle"></div>
-      <div class="modal-title" id="historyTitle">History</div>
-      <div id="historyList" style="max-height:55vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
-      <button class="btn-cancel" style="width:100%" onclick="closeModal('historyModal')">Close</button>
-    </div>
-  </div>
-
+  <!-- ── TOAST ── -->
   <div id="toast"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
